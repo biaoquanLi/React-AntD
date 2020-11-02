@@ -1,6 +1,5 @@
 import React from 'react'
 import { Menu } from 'antd';
-import { MailOutlined } from '@ant-design/icons';
 import menuList from '../../config/menuConfig'
 import './index.less'
 const { SubMenu } = Menu;

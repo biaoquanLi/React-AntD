@@ -1,7 +1,6 @@
 import React from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import App from '../App'
-import Login from '../pages/login'
 import Admin from '../admin'
 import NoMatch from '../pages/nomatch'
 import Buttons from '../pages/ui/buttons'

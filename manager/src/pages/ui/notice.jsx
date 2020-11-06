@@ -12,7 +12,7 @@ export default class Notice extends React.Component{
     render(){
         return (
             <div style={{width:'100%'}}>
-                <Card title="Tab页签" className="card-wrap">
+                <Card title="系统通知" className="card-wrap">
                     <Button type="primary" onClick={() => this.openNotification('success','topLeft')}>Success</Button>
                     <Button type="primary" onClick={() => this.openNotification('info','topRight')}>Info</Button>
                     <Button type="primary" onClick={() => this.openNotification('warning','bottomLeft')}>Warning</Button>

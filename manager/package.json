@@ -45,6 +45,7 @@
     "less": "^3.12.2",
     "less-loader": "^7.0.2",
     "mini-css-extract-plugin": "0.11.3",
+    "moment": "^2.29.1",
     "optimize-css-assets-webpack-plugin": "5.0.4",
     "pnp-webpack-plugin": "1.6.4",
     "postcss-flexbugs-fixes": "4.2.1",
@@ -84,7 +85,7 @@
       "react-app/jest"
     ],
     "rules": {
-        "jsx-a11y/anchor-is-valid":"off"
+      "jsx-a11y/anchor-is-valid": "off"
     }
   },
   "browserslist": {
@@ -156,14 +157,14 @@
       "react-app"
     ],
     "plugins": [
-        [
-          "import",
-          {
-            "libraryName": "antd",
-            "style": "css"
-          }
-        ]
+      [
+        "import",
+        {
+          "libraryName": "antd",
+          "style": "css"
+        }
       ]
+    ]
   },
   "devDependencies": {
     "babel-plugin-import": "^1.13.1"

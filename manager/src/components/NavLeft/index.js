@@ -8,7 +8,6 @@ const { SubMenu } = Menu;
 export default class NavLeft extends React.Component {
     componentWillMount(){
         const menuTreeNode = this.renderMenu(menuList)
-        console.log(menuTreeNode)
         this.setState({menuTreeNode})
     }
     renderMenu = (data) => {

@@ -70,18 +70,21 @@ export default class Register extends React.Component {
 		console.log(values)
 	}
 	onChangeBirthday = (date, dateString) => {
+		console.log(date, dateString)
 		this.setState({
 			birthday: date,
 			birthdayStr: dateString,
 		})
 	}
 	onChangeRise = (time, timeString) => {
+		console.log(time, timeString)
 		this.setState({
 			riseTime: time,
 			riseTimeStr: timeString,
 		})
 	}
 	onChangeIsRead = (e) => {
+		console.log(e.target.checked)
 		this.setState({
 			isRead: e.target.checked,
 		})
@@ -128,6 +131,11 @@ export default class Register extends React.Component {
 						labelCol={{ span: 7 }}
 						wrapperCol={{ span: 9 }}
 						onFinish={this.onFinish}
+						initialValues={{
+							isRead: false,
+							isMarry: false,
+							sex: 1,
+						}}
 					>
 						<Form.Item
 							label="用户名"
@@ -228,6 +236,7 @@ export default class Register extends React.Component {
 						<Form.Item
 							wrapperCol={{ span: 9, offset: 7 }}
 							name="isRead"
+							valuePropName="checked"
 						>
 							<Checkbox onChange={this.onChangeIsRead}>
 								我已阅读过

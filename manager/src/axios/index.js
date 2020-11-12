@@ -1,26 +1,29 @@
 import Modal from 'antd/lib/modal/Modal'
 import axios from 'axios'
-import {message} from 'antd'
+import {
+    message
+} from 'antd'
 
 export default class Axios {
-    static ajxa(options){
-        const baseApi = 'https://www.easy-mock.com/mock/5fab5dfc5d1197774d6ab195/mockapi'
-        return new Promise((resolve,reject)=>{
+    static ajxa(options) {
+        // const baseApi = 'https://www.easy-mock.com/mock/5fab5dfc5d1197774d6ab195/mockapi'
+        const baseApi = 'https://www.fastmock.site/mock/b8679bbc171e7ae19759cfe09cea1d91/mockapi'
+        return new Promise((resolve, reject) => {
             axios({
-                url:options.url,
+                url: options.url,
                 method: 'get',
                 baseURL: baseApi,
                 timeout: 5000,
                 params: (options.data && options.data.params) || ''
-            }).then((response)=>{
-                if(response.status === 200){
+            }).then((response) => {
+                if (response.status === 200) {
                     let res = response.data
-                    if(res.code === 200){
+                    if (res.code === 200) {
                         resolve(res)
-                    }else{
+                    } else {
                         message.error(res.msg);
                     }
-                }else{
+                } else {
                     reject(response.data)
                 }
             })

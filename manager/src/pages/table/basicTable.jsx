@@ -34,8 +34,6 @@ const basicData = [
 		riseTime: '09:00',
 	},
 ]
-const baseUrl =
-	'https://www.easy-mock.com/mock/5fab5dfc5d1197774d6ab195/mockapi'
 export default class BasicTable extends React.Component {
 	state = {
 		data2: [],

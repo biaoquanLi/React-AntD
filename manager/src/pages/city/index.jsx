@@ -1,9 +1,10 @@
 import React from 'react'
-import { Card, Form, Button, Table, Modal, Select } from 'antd'
+import { Card, Form, Button, Table, Modal, Select, message } from 'antd'
 import axios from '../../axios/index'
 import Utils from '../../utils/utils'
 const { Option } = Select
 export default class CityManage extends React.Component {
+	formRef = React.createRef()
 	state = {
 		list: [],
 		isLoading: true,
@@ -32,6 +33,31 @@ export default class CityManage extends React.Component {
 				})
 			})
 	}
+	handleOpenCity = () => {
+		this.setState({ isShowOpenCity: true })
+	}
+	getSearchParams = (params) => {
+		console.log(222, params)
+		this.requestList()
+	}
+	handleSumbit = () => {
+		const params = this.formRef.current.getFieldsValue()
+		axios
+			.ajxa({
+				url: '/open_city/add',
+				data: {
+					params,
+				},
+			})
+			.then((res) => {
+				if (res.code === 200) {
+					message.success('城市开通成功')
+					this.setState({
+						isShowOpenCity: false,
+					})
+				}
+			})
+	}
 	render() {
 		const columns = [
 			{
@@ -40,7 +66,7 @@ export default class CityManage extends React.Component {
 			},
 			{
 				title: '城市名称',
-				dataIndex: 'name',
+				dataIndex: 'cityName',
 			},
 			{
 				title: '用车模式',
@@ -88,7 +114,7 @@ export default class CityManage extends React.Component {
 		return (
 			<div style={{ width: '100%' }}>
 				<Card>
-					<FilterForm />
+					<FilterForm getSearchParams={this.getSearchParams} />
 				</Card>
 				<Card style={{ marginTop: 10 }}>
 					<Button type="primary" onClick={this.handleOpenCity}>
@@ -105,15 +131,54 @@ export default class CityManage extends React.Component {
 						rowKey={(record) => record.id}
 					/>
 				</div>
+				<Modal
+					title="开通城市"
+					visible={this.state.isShowOpenCity}
+					onCancel={() => {
+						this.setState({ isShowOpenCity: false })
+					}}
+					onOk={this.handleSumbit}
+					cancelText="取消"
+					okText="确定"
+				>
+					<Form
+						layout="horizontal"
+						ref={this.formRef}
+						labelCol={{ span: 8 }}
+						wrapperCol={{ span: 7 }}
+						initialValues={{ cityName: '', op_mode: 1, mode: 2 }}
+					>
+						<Form.Item label="选择城市" name="cityName">
+							<Select>
+								<Option value="">全部</Option>
+								<Option value="1">北京市</Option>
+								<Option value="2">天津市</Option>
+							</Select>
+						</Form.Item>
+						<Form.Item label="运营模式" name="op_mode">
+							<Select>
+								<Option value={1}>自营</Option>
+								<Option value={2}>加盟</Option>
+							</Select>
+						</Form.Item>
+						<Form.Item label="用车模式" name="mode">
+							<Select>
+								<Option value={1}>指定停车点</Option>
+								<Option value={2}>禁停区</Option>
+							</Select>
+						</Form.Item>
+					</Form>
+				</Modal>
 			</div>
 		)
 	}
 }
 
-const FilterForm = () => {
+const FilterForm = (props) => {
 	const [form] = Form.useForm()
 	const search = (values) => {
-		console.log(values)
+		const { getSearchParams } = props
+		getSearchParams(values)
 	}
 	const reset = () => {
 		form.resetFields()

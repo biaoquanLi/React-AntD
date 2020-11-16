@@ -1,3 +1,21 @@
+ul,li{
+    list-style: none;
+}
+a{
+    color: #f9c700;
+    background-color: transparent;
+    text-decoration: none;
+    outline: none;
+    cursor: pointer;
+}
+.clearfix{
+    &::after{
+        content:' ';
+        clear:both;
+        display: block;
+        visibility: hidden;
+    }
+}
 .container{
     display: flex;
     .nav-left{

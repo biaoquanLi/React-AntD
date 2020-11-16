@@ -2,6 +2,7 @@ import React from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import App from '../App'
 import Admin from '../admin'
+import Common from '../common'
 import NoMatch from '../pages/nomatch'
 import Buttons from '../pages/ui/buttons'
 import Modals from '../pages/ui/modals'
@@ -16,6 +17,7 @@ import BasicTable from '../pages/table/basicTable'
 import HighTable from '../pages/table/highTable'
 import CityManage from '../pages/city/index'
 import Order from '../pages/order/index'
+import OrderDetail from '../pages/order/detail'
 
 export default class IRouter extends React.Component {
 	render() {
@@ -72,6 +74,12 @@ export default class IRouter extends React.Component {
 							</Admin>
 						)}
 					></Route>
+                    <Route path="/common" render={()=>(
+                        <Common>
+                            <Route path="/common/order/detail/:orderId" component={OrderDetail}></Route>
+                        </Common>
+                    )}>
+                    </Route>
 				</App>
 			</Router>
 		)

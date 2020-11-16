@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card, Form, Button, DatePicker, Table, Select,Badge, message } from 'antd'
+import { Card, Form, Button, DatePicker, Table, Select,Badge, message, Modal } from 'antd'
 import axios from '../../axios/index'
 import Utils from '../../utils/utils'
 const { Option } = Select
@@ -8,7 +8,8 @@ export default class Order extends React.Component {
     state = {
         list: [],
         isLoading:true,
-        pagination:null
+        pagination:null,
+        selectId: ''
     }
 	getSearchParams = (params) => {
 		console.log(params)
@@ -32,6 +33,21 @@ export default class Order extends React.Component {
 					}),
 				})
 			})
+    }
+    toDetail=()=>{
+        const id = this.state.selectId
+        if(id){
+            window.open(`/common/order/detail/${id}`,'_blank')
+        }else{
+            Modal.info({
+                title: '信息',
+                content: (
+                  <div>
+                    <p>请先选择一条订单</p>
+                  </div>
+                ),
+              })
+        }
     }
     componentDidMount(){
         this.requestList()
@@ -89,18 +105,25 @@ export default class Order extends React.Component {
                 dataIndex: 'user_pay'
             }
         ]
+        const rowSelection = {
+			type: 'radio',
+			onSelect: (record) => {
+				this.setState({selectId:record.id})
+			},
+		}
 		return (
 			<div style={{ width: '100%' }}>
 				<Card>
 					<FilterForm getSearchParams={this.getSearchParams} />
 				</Card>
                 <Card style={{marginTop:10}}>
-                    <Button type="primary">订单详情</Button>
+                    <Button type="primary" onClick={this.toDetail}>订单详情</Button>
                     <Button danger style={{marginLeft:10}}>结束订单</Button>
                 </Card>
                 <div className="content-wrap">
                     <Table
                         bordered
+                        rowSelection={rowSelection}
 						loading={this.state.isLoading}
 						columns={columns}
 						dataSource={this.state.list}

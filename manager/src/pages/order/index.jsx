@@ -1,20 +1,33 @@
 import React from 'react'
-import { Card, Form, Button, DatePicker, Table, Select,Badge, message, Modal } from 'antd'
+import {
+	Card,
+	Form,
+	Button,
+	DatePicker,
+	Table,
+	Select,
+	Badge,
+	message,
+	Modal,
+	Spin,
+} from 'antd'
 import axios from '../../axios/index'
 import Utils from '../../utils/utils'
 const { Option } = Select
 const { RangePicker } = DatePicker
 export default class Order extends React.Component {
-    state = {
-        list: [],
-        isLoading:true,
-        pagination:null,
-        selectId: ''
-    }
+	state = {
+		list: [],
+		isLoading: true,
+		pagination: null,
+		selectId: '',
+		isShow: false,
+		endBikeInfo: null,
+	}
 	getSearchParams = (params) => {
 		console.log(params)
-    }
-    requestList = (current = 1) => {
+	}
+	requestList = (current = 1) => {
 		axios
 			.ajxa({
 				url: '/order/list',
@@ -33,104 +46,207 @@ export default class Order extends React.Component {
 					}),
 				})
 			})
-    }
-    toDetail=()=>{
-        const id = this.state.selectId
-        if(id){
-            window.open(`/common/order/detail/${id}`,'_blank')
-        }else{
-            Modal.info({
-                title: '信息',
-                content: (
-                  <div>
-                    <p>请先选择一条订单</p>
-                  </div>
-                ),
-              })
-        }
-    }
-    componentDidMount(){
-        this.requestList()
-    }
+	}
+	toDetail = () => {
+		const id = this.state.orderId
+		if (id) {
+			window.open(`/common/order/detail/${id}`, '_blank')
+		} else {
+			Modal.info({
+				title: '信息',
+				content: (
+					<div>
+						<p>请先选择一条订单</p>
+					</div>
+				),
+			})
+		}
+	}
+	endOrder = () => {
+		const { orderId } = this.state
+		this.setState({
+			endBikeInfo: null,
+			isShow: true,
+		})
+		if (orderId) {
+			axios
+				.ajxa({
+					url: '/order/endBikeInfo',
+					data: {
+						params: {
+							orderId,
+						},
+					},
+				})
+				.then((res) => {
+					if (res.code === 200) {
+						this.setState({
+							endBikeInfo: res.data,
+						})
+					}
+				})
+		} else {
+			Modal.info({
+				title: '信息',
+				content: (
+					<div>
+						<p>请先选择一条订单</p>
+					</div>
+				),
+			})
+		}
+	}
+	handleSumbit = () => {
+		const { orderId } = this.state
+		axios
+			.ajxa({
+				url: '/order/finishOrder',
+				data: {
+					params: {
+						orderId,
+					},
+				},
+			})
+			.then((res) => {
+				if (res.code === 200) {
+					message.success('成功结束订单')
+					this.setState({
+						isShow: false,
+					})
+				}
+				this.requestList()
+			})
+	}
+	componentDidMount() {
+		this.requestList()
+	}
 	render() {
-        const columns = [
-            {
-                title:'订单编号',
-                dataIndex:'order_sn'
-            },
-            {
-                title: '车辆编号',
-                dataIndex: 'bike_sn'
-            },
-            {
-                title: '用户名',
-                dataIndex: 'user_name'
-            },
-            {
-                title: '手机号',
-                dataIndex: 'mobile'
-            },
-            {
-                title: '里程',
-                dataIndex: 'distance',
-                render(distance){
-                    return distance/1000 + 'Km';
-                }
-            },
-            {
-                title: '行驶时长',
-                dataIndex: 'total_time'
-            },
-            {
-                title: '状态',
-                dataIndex: 'status',
-                render(value){
-                    return value === 1?<Badge status="processing" text="进行中" />:<Badge status="success" text="结束行程" />
-                }
-            },
-            {
-                title: '开始时间',
-                dataIndex: 'start_time'
-            },
-            {
-                title: '结束时间',
-                dataIndex: 'end_time'
-            },
-            {
-                title: '订单金额',
-                dataIndex: 'total_fee'
-            },
-            {
-                title: '实付金额',
-                dataIndex: 'user_pay'
-            }
-        ]
-        const rowSelection = {
+		const columns = [
+			{
+				title: '订单编号',
+				dataIndex: 'order_sn',
+			},
+			{
+				title: '车辆编号',
+				dataIndex: 'bike_sn',
+			},
+			{
+				title: '用户名',
+				dataIndex: 'user_name',
+			},
+			{
+				title: '手机号',
+				dataIndex: 'mobile',
+			},
+			{
+				title: '里程',
+				dataIndex: 'distance',
+				render(distance) {
+					return distance / 1000 + 'Km'
+				},
+			},
+			{
+				title: '行驶时长',
+				dataIndex: 'total_time',
+			},
+			{
+				title: '状态',
+				dataIndex: 'status',
+				render(value) {
+					return value === 1 ? (
+						<Badge status="processing" text="进行中" />
+					) : (
+						<Badge status="success" text="结束行程" />
+					)
+				},
+			},
+			{
+				title: '开始时间',
+				dataIndex: 'start_time',
+			},
+			{
+				title: '结束时间',
+				dataIndex: 'end_time',
+			},
+			{
+				title: '订单金额',
+				dataIndex: 'total_fee',
+			},
+			{
+				title: '实付金额',
+				dataIndex: 'user_pay',
+			},
+		]
+		const rowSelection = {
 			type: 'radio',
 			onSelect: (record) => {
-				this.setState({selectId:record.id})
+				this.setState({ orderId: record.id })
 			},
 		}
+		const endBikeInfo = this.state.endBikeInfo || {}
 		return (
 			<div style={{ width: '100%' }}>
 				<Card>
 					<FilterForm getSearchParams={this.getSearchParams} />
 				</Card>
-                <Card style={{marginTop:10}}>
-                    <Button type="primary" onClick={this.toDetail}>订单详情</Button>
-                    <Button danger style={{marginLeft:10}}>结束订单</Button>
-                </Card>
-                <div className="content-wrap">
-                    <Table
-                        bordered
-                        rowSelection={rowSelection}
+				<Card style={{ marginTop: 10 }}>
+					<Button type="primary" onClick={this.toDetail}>
+						订单详情
+					</Button>
+					<Button
+						danger
+						style={{ marginLeft: 10 }}
+						onClick={this.endOrder}
+					>
+						结束订单
+					</Button>
+				</Card>
+				<div className="content-wrap">
+					<Table
+						bordered
+						rowSelection={rowSelection}
 						loading={this.state.isLoading}
 						columns={columns}
 						dataSource={this.state.list}
 						pagination={this.state.pagination}
 						rowKey={(record) => record.order_sn}
-                    />
-                </div>
+					/>
+				</div>
+				<Modal
+					title="结束订单"
+					visible={this.state.isShow}
+					onCancel={() => {
+						this.setState({ isShow: false })
+					}}
+					onOk={this.handleSumbit}
+					cancelText="取消"
+					okText="确定"
+				>
+					{this.state.endBikeInfo ? (
+						<div>
+							<div className="infoContent">
+								<span>车辆编号:</span>
+								<span>{endBikeInfo.bike_sn}</span>
+							</div>
+							<div className="infoContent">
+								<span>剩余电量:</span>
+								<span>{endBikeInfo.battery}%</span>
+							</div>
+							<div className="infoContent">
+								<span>行程开始时间:</span>
+								<span>{endBikeInfo.start_time}</span>
+							</div>
+							<div className="infoContent">
+								<span>当前位置:</span>
+								<span>{endBikeInfo.location}</span>
+							</div>
+						</div>
+					) : (
+						<div className="loading-model">
+							<Spin />
+						</div>
+					)}
+				</Modal>
 			</div>
 		)
 	}
@@ -156,7 +272,7 @@ const FilterForm = (props) => {
 				</Select>
 			</Form.Item>
 			<Form.Item label="订单时间" name="orderTime">
-            <RangePicker showTime format="YYYY-MM-DD HH:mm:ss" />
+				<RangePicker showTime format="YYYY-MM-DD HH:mm:ss" />
 			</Form.Item>
 			<Form.Item label="订单状态" name="mode">
 				<Select placeholder="全部" style={{ width: 120 }}>

@@ -11,6 +11,7 @@ import {
 	Modal,
 	Spin,
 } from 'antd'
+import FilterForm from '../../components/filterForm/filterForm'
 import axios from '../../axios/index'
 import Utils from '../../utils/utils'
 const { Option } = Select
@@ -184,10 +185,35 @@ export default class Order extends React.Component {
 			},
 		}
 		const endBikeInfo = this.state.endBikeInfo || {}
+		const formList = [
+			{
+				type: 'Select',
+				label: '城市',
+				name: 'city_id',
+				placeholder: '请选择城市',
+				width: 130,
+				list: [
+					{ title: '全部', value: '' },
+					{ title: '北京市', value: '1' },
+					{ title: '天津市', value: '2' },
+					{ title: '深圳市', value: '3' },
+				],
+			},
+			{
+				type: 'Input',
+				label: '城市',
+				name: 'city',
+				placeholder: '请选择城市',
+				width: 120,
+			},
+		]
 		return (
 			<div style={{ width: '100%' }}>
 				<Card>
-					<FilterForm getSearchParams={this.getSearchParams} />
+					<FilterForm
+						handleSearch={this.getSearchParams}
+						formList={formList}
+					/>
 				</Card>
 				<Card style={{ marginTop: 10 }}>
 					<Button type="primary" onClick={this.toDetail}>
@@ -252,45 +278,45 @@ export default class Order extends React.Component {
 	}
 }
 
-const FilterForm = (props) => {
-	const [form] = Form.useForm()
-	const search = (values) => {
-		const { getSearchParams } = props
-		getSearchParams(values)
-	}
-	const reset = () => {
-		form.resetFields()
-	}
-	return (
-		<Form form={form} layout="inline" onFinish={search}>
-			<Form.Item label="城市" name="city_id">
-				<Select placeholder="全部" style={{ width: 100 }}>
-					<Option value="">全部</Option>
-					<Option value="1">北京市</Option>
-					<Option value="2">天津市</Option>
-					<Option value="3">深圳市</Option>
-				</Select>
-			</Form.Item>
-			<Form.Item label="订单时间" name="orderTime">
-				<RangePicker showTime format="YYYY-MM-DD HH:mm:ss" />
-			</Form.Item>
-			<Form.Item label="订单状态" name="mode">
-				<Select placeholder="全部" style={{ width: 120 }}>
-					<Option value="">全部</Option>
-					<Option value="1">进行中</Option>
-					<Option value="2">结束行程</Option>
-				</Select>
-			</Form.Item>
-			<Form.Item>
-				<Button
-					type="primary"
-					style={{ margin: '0 20px' }}
-					htmlType="submit"
-				>
-					查询
-				</Button>
-				<Button onClick={reset}>重置</Button>
-			</Form.Item>
-		</Form>
-	)
-}
+// const FilterForm = (props) => {
+// 	const [form] = Form.useForm()
+// 	const search = (values) => {
+// 		const { getSearchParams } = props
+// 		getSearchParams(values)
+// 	}
+// 	const reset = () => {
+// 		form.resetFields()
+// 	}
+// 	return (
+// 		<Form form={form} layout="inline" onFinish={search}>
+// 			<Form.Item label="城市" name="city_id">
+// 				<Select placeholder="全部" style={{ width: 100 }}>
+// 					<Option value="">全部</Option>
+// 					<Option value="1">北京市</Option>
+// 					<Option value="2">天津市</Option>
+// 					<Option value="3">深圳市</Option>
+// 				</Select>
+// 			</Form.Item>
+// 			<Form.Item label="订单时间" name="orderTime">
+// 				<RangePicker showTime format="YYYY-MM-DD HH:mm:ss" />
+// 			</Form.Item>
+// 			<Form.Item label="订单状态" name="mode">
+// 				<Select placeholder="全部" style={{ width: 120 }}>
+// 					<Option value="">全部</Option>
+// 					<Option value="1">进行中</Option>
+// 					<Option value="2">结束行程</Option>
+// 				</Select>
+// 			</Form.Item>
+// 			<Form.Item>
+// 				<Button
+// 					type="primary"
+// 					style={{ margin: '0 20px' }}
+// 					htmlType="submit"
+// 				>
+// 					查询
+// 				</Button>
+// 				<Button onClick={reset}>重置</Button>
+// 			</Form.Item>
+// 		</Form>
+// 	)
+// }

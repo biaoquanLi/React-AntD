@@ -2,6 +2,7 @@ import React from 'react'
 import { Card, Form, Button, Table, Modal, Select, message } from 'antd'
 import axios from '../../axios/index'
 import Utils from '../../utils/utils'
+import FilterForm from '../../components/filterForm/filterForm'
 const { Option } = Select
 export default class CityManage extends React.Component {
 	formRef = React.createRef()
@@ -111,10 +112,64 @@ export default class CityManage extends React.Component {
 				dataIndex: 'sys_user_name',
 			},
 		]
+		const formList = [
+			{
+				type: 'Select',
+				label: '城市',
+				name: 'city_id',
+				placeholder: '请选择城市',
+				width: 100,
+				list: [
+					{ title: '全部', value: '' },
+					{ title: '北京市', value: '1' },
+					{ title: '天津市', value: '2' },
+					{ title: '深圳市', value: '3' },
+				],
+			},
+			{
+				type: 'Select',
+				label: '用车模式',
+				name: 'mode',
+				placeholder: '全部',
+				width: 120,
+				list: [
+					{ title: '全部', value: '' },
+					{ title: '指定停车点模式', value: '1' },
+					{ title: '禁停区模式', value: '2' },
+				],
+			},
+			{
+				type: 'Select',
+				label: '运营模式',
+				name: 'op_mode',
+				placeholder: '全部',
+				width: 80,
+				list: [
+					{ title: '全部', value: '' },
+					{ title: '自营', value: '1' },
+					{ title: '加盟', value: '2' },
+				],
+			},
+			{
+				type: 'Select',
+				label: '加盟商授权状态',
+				name: 'auth_status',
+				placeholder: '全部',
+				width: 100,
+				list: [
+					{ title: '全部', value: '' },
+					{ title: '已授权', value: '1' },
+					{ title: '未授权', value: '2' },
+				],
+			},
+		]
 		return (
 			<div style={{ width: '100%' }}>
 				<Card>
-					<FilterForm getSearchParams={this.getSearchParams} />
+					<FilterForm
+						handleSearch={this.getSearchParams}
+						formList={formList}
+					></FilterForm>
 				</Card>
 				<Card style={{ marginTop: 10 }}>
 					<Button type="primary" onClick={this.handleOpenCity}>
@@ -172,58 +227,4 @@ export default class CityManage extends React.Component {
 			</div>
 		)
 	}
-}
-
-const FilterForm = (props) => {
-	const [form] = Form.useForm()
-	const search = (values) => {
-		const { getSearchParams } = props
-		getSearchParams(values)
-	}
-	const reset = () => {
-		form.resetFields()
-	}
-	return (
-		<Form form={form} layout="inline" onFinish={search}>
-			<Form.Item label="城市" name="city_id">
-				<Select placeholder="全部" style={{ width: 100 }}>
-					<Option value="">全部</Option>
-					<Option value="1">北京市</Option>
-					<Option value="2">天津市</Option>
-					<Option value="3">深圳市</Option>
-				</Select>
-			</Form.Item>
-			<Form.Item label="用车模式" name="mode">
-				<Select placeholder="全部" style={{ width: 120 }}>
-					<Option value="">全部</Option>
-					<Option value="1">指定停车点模式</Option>
-					<Option value="2">禁停区模式</Option>
-				</Select>
-			</Form.Item>
-			<Form.Item label="运营模式" name="op_mode">
-				<Select placeholder="全部" style={{ width: 80 }}>
-					<Option value="">全部</Option>
-					<Option value="1">自营</Option>
-					<Option value="2">加盟</Option>
-				</Select>
-			</Form.Item>
-			<Form.Item label="加盟商授权状态" name="auth_status">
-				<Select placeholder="全部" style={{ width: 100 }}>
-					<Option value="">全部</Option>
-					<Option value="1">已授权</Option>
-					<Option value="2">未授权</Option>
-				</Select>
-			</Form.Item>
-			<Form.Item>
-				<Button
-					type="primary"
-					style={{ margin: '0 20px' }}
-					htmlType="submit"
-				>
-					查询
-				</Button>
-				<Button onClick={reset}>重置</Button>
-			</Form.Item>
-		</Form>
-	)
 }

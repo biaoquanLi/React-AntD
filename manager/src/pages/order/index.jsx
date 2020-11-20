@@ -26,7 +26,7 @@ export default class Order extends React.Component {
 		endBikeInfo: null,
 	}
 	getSearchParams = (params) => {
-		console.log(params)
+		console.log(222, params)
 	}
 	requestList = (current = 1) => {
 		axios
@@ -200,11 +200,22 @@ export default class Order extends React.Component {
 				],
 			},
 			{
-				type: 'Input',
-				label: '城市',
-				name: 'city',
-				placeholder: '请选择城市',
-				width: 120,
+				type: 'RangePicker',
+				label: '订单时间',
+				name: 'orderTime',
+				placeholder: ['开始时间', '结束时间'],
+			},
+			{
+				type: 'Select',
+				label: '订单状态',
+				name: 'mode',
+				placeholder: '全部',
+				width: 130,
+				list: [
+					{ title: '全部', value: '' },
+					{ title: '进行中', value: '1' },
+					{ title: '行程结束', value: '2' },
+				],
 			},
 		]
 		return (
@@ -277,46 +288,3 @@ export default class Order extends React.Component {
 		)
 	}
 }
-
-// const FilterForm = (props) => {
-// 	const [form] = Form.useForm()
-// 	const search = (values) => {
-// 		const { getSearchParams } = props
-// 		getSearchParams(values)
-// 	}
-// 	const reset = () => {
-// 		form.resetFields()
-// 	}
-// 	return (
-// 		<Form form={form} layout="inline" onFinish={search}>
-// 			<Form.Item label="城市" name="city_id">
-// 				<Select placeholder="全部" style={{ width: 100 }}>
-// 					<Option value="">全部</Option>
-// 					<Option value="1">北京市</Option>
-// 					<Option value="2">天津市</Option>
-// 					<Option value="3">深圳市</Option>
-// 				</Select>
-// 			</Form.Item>
-// 			<Form.Item label="订单时间" name="orderTime">
-// 				<RangePicker showTime format="YYYY-MM-DD HH:mm:ss" />
-// 			</Form.Item>
-// 			<Form.Item label="订单状态" name="mode">
-// 				<Select placeholder="全部" style={{ width: 120 }}>
-// 					<Option value="">全部</Option>
-// 					<Option value="1">进行中</Option>
-// 					<Option value="2">结束行程</Option>
-// 				</Select>
-// 			</Form.Item>
-// 			<Form.Item>
-// 				<Button
-// 					type="primary"
-// 					style={{ margin: '0 20px' }}
-// 					htmlType="submit"
-// 				>
-// 					查询
-// 				</Button>
-// 				<Button onClick={reset}>重置</Button>
-// 			</Form.Item>
-// 		</Form>
-// 	)
-// }

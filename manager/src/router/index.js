@@ -19,6 +19,11 @@ import CityManage from '../pages/city/index'
 import Order from '../pages/order/index'
 import OrderDetail from '../pages/order/detail'
 import User from '../pages/user/index'
+import BikeMap from '../pages/bikeMap/index'
+import Bar from '../pages/charts/bar'
+import Pie from '../pages/charts/pie'
+import Line from '../pages/charts/line'
+import Rich from '../pages/rich/index'
 
 export default class IRouter extends React.Component {
 	render() {
@@ -71,6 +76,11 @@ export default class IRouter extends React.Component {
                                      <Route path="/admin/city" component={CityManage}></Route>
                                      <Route path="/admin/order" component={Order}></Route>
                                      <Route path="/admin/user" component={User}></Route> 
+                                     <Route path="/admin/bikeMap" component={BikeMap}></Route>
+                                     <Route path="/admin/charts/bar" component={Bar}></Route>
+                                     <Route path="/admin/charts/pie" component={Pie}></Route>
+                                     <Route path="/admin/charts/line" component={Line}></Route>
+                                     <Route path="/admin/rich" component={Rich}></Route>
 									<Route component={NoMatch}> </Route>
 								</Switch>
 							</Admin>

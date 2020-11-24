@@ -9,11 +9,14 @@ import {
 	Select,
 	Input,
 	Radio,
+	DatePicker,
 } from 'antd'
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import FilterForm from '../../components/filterForm/filterForm'
 import axios from '../../axios/index'
 import Util from '../../utils/utils'
+import moment from 'moment'
+import './index.less'
 const { confirm } = Modal
 const { Option } = Select
 const { TextArea } = Input
@@ -55,24 +58,41 @@ export default class User extends React.Component {
 	}
 	userOperate = (type) => {
 		if (type === 'add') {
-			this.setState({
-				record: null,
-				modalTitle: '创建员工',
-				visible: true,
-			})
+			this.setState(
+				{
+					modalTitle: '创建员工',
+					visible: true,
+				},
+				() => {
+					this.formRef.current.resetFields()
+				}
+			)
 		} else {
 			if (this.state.orderId) {
 				if (type === 'edit') {
-					this.setState({
-						modalTitle: '编辑员工',
-						visible: true,
-					})
-					this.formRef.current.setfildsValue({ username: 2222 })
+					this.setState(
+						{
+							modalTitle: '编辑员工',
+							visible: true,
+						},
+						() => {
+							this.formRef.current.setFieldsValue(
+								this.state.record
+							)
+						}
+					)
 				} else if (type === 'detail') {
-					this.setState({
-						modalTitle: '员工详情',
-						visible: true,
-					})
+					this.setState(
+						{
+							modalTitle: '员工详情',
+							visible: true,
+						},
+						() => {
+							this.formRef.current.setFieldsValue(
+								this.state.record
+							)
+						}
+					)
 				} else {
 					confirm({
 						title: '删除',
@@ -114,27 +134,30 @@ export default class User extends React.Component {
 	}
 	handleSubmit = (modalTitle) => {
 		const params = this.formRef.current.getFieldsValue()
+		params.birthday = moment(moment(params.birthday).valueOf()).format(
+			'YYYY-MM-DD'
+		)
 		if (this.state.orderId && modalTitle === '编辑员工') {
 			params.id = this.state.orderId
+		} else if (modalTitle === '创建员工') {
+			axios
+				.ajxa({
+					url: `/user/${modalTitle === '创建员工' ? 'add' : 'edit'}`,
+					data: {
+						params,
+					},
+				})
+				.then((res) => {
+					if (res.code === 200) {
+						message.success(res.msg)
+						this.formRef.current.resetFields()
+						this.requestList()
+					}
+				})
 		}
-		console.log(333, params)
 		this.setState({
 			visible: false,
 		})
-		axios
-			.ajxa({
-				url: `/user/${modalTitle === '创建员工' ? 'add' : 'edit'}`,
-				data: {
-					params,
-				},
-			})
-			.then((res) => {
-				if (res.code === 200) {
-					message.success(res.msg)
-					this.formRef.current.resetFields()
-					this.requestList()
-				}
-			})
 	}
 	componentDidMount() {
 		this.requestList()
@@ -217,12 +240,17 @@ export default class User extends React.Component {
 				dataIndex: 'time',
 			},
 		]
+		const { modalTitle, isLoading, list, pagination, visible } = this.state
 		const rowSelection = {
 			type: 'radio',
 			onSelect: (record) => {
-				this.setState({ orderId: record.id, record })
+				const recordOrder = Object.assign({}, record, {
+					birthday: moment(record.birthday),
+				})
+				this.setState({ orderId: recordOrder.id, record: recordOrder })
 			},
 		}
+		const disable = modalTitle === '员工详情'
 		return (
 			<div style={{ width: '100%' }}>
 				<Card>
@@ -273,21 +301,21 @@ export default class User extends React.Component {
 					<Table
 						bordered
 						rowSelection={rowSelection}
-						loading={this.state.isLoading}
+						loading={isLoading}
 						columns={columns}
-						dataSource={this.state.list}
-						pagination={this.state.pagination}
+						dataSource={list}
+						pagination={pagination}
 						rowKey={(record) => record.id}
 					/>
 				</div>
 				<Modal
-					title={this.state.modalTitle}
-					visible={this.state.visible}
+					title={modalTitle}
+					visible={visible}
 					onCancel={() => {
 						this.setState({ visible: false })
 					}}
 					onOk={() => {
-						this.handleSubmit(this.state.modalTitle)
+						this.handleSubmit(modalTitle)
 					}}
 					okText="确定"
 					cancelText="取消"
@@ -299,17 +327,36 @@ export default class User extends React.Component {
 						wrapperCol={{ span: 18 }}
 						initialValues={{ sex: 1 }}
 					>
-						<Form.Item label="姓名" name="username">
-							<Input placeholder="请输入姓名" />
+						<Form.Item
+							label="姓名"
+							name="username"
+							rules={[
+								{
+									required: true,
+									message: '请输入你的姓名!',
+								},
+							]}
+						>
+							<Input
+								placeholder="请输入姓名"
+								disabled={disable}
+							/>
 						</Form.Item>
 						<Form.Item label="性别" name="sex">
-							<Radio.Group>
+							<Radio.Group disabled={disable}>
 								<Radio value={1}>男</Radio>
 								<Radio value={2}>女</Radio>
 							</Radio.Group>
 						</Form.Item>
+						<Form.Item label="生日" name="birthday">
+							<DatePicker
+								placeholder="请选择日期"
+								disabled={disable}
+							/>
+						</Form.Item>
+
 						<Form.Item label="状态" name="state">
-							<Select placeholder="请选择状态">
+							<Select placeholder="请选择状态" disabled={disable}>
 								<Option value={1}>咸鱼一条</Option>
 								<Option value={2}>风华浪子</Option>
 								<Option value={3}>北大才子</Option>
@@ -318,7 +365,10 @@ export default class User extends React.Component {
 							</Select>
 						</Form.Item>
 						<Form.Item label="联系地址" name="address">
-							<TextArea placeholder="请输入联系地址" />
+							<TextArea
+								placeholder="请输入联系地址"
+								disabled={disable}
+							/>
 						</Form.Item>
 					</Form>
 				</Modal>

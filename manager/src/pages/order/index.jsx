@@ -1,11 +1,8 @@
 import React from 'react'
 import {
 	Card,
-	Form,
 	Button,
-	DatePicker,
 	Table,
-	Select,
 	Badge,
 	message,
 	Modal,
@@ -14,8 +11,6 @@ import {
 import FilterForm from '../../components/filterForm/filterForm'
 import axios from '../../axios/index'
 import Utils from '../../utils/utils'
-const { Option } = Select
-const { RangePicker } = DatePicker
 export default class Order extends React.Component {
 	state = {
 		list: [],
